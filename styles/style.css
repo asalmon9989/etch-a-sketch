@@ -1,0 +1,17 @@
+* {
+	box-sizing: border-box;
+}
+
+.container {
+	width: 600px;
+	height: 600px;
+	display: grid;
+
+}
+
+.pixel {
+	border-color: black;
+	background-color: green;
+	border-width: 2px;
+	margin: 1px;
+}
