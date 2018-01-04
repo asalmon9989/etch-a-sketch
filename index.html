@@ -5,7 +5,15 @@
 		<title>Etch a Sketch!</title>
 	</head>
 	<body>
+		<h1 class='instr'>Draw! Hold Ctrl to stop drawing.</h1>
 		<button id="reset">Reset</button>
+		<span style="margin-left: 5px">Color: </span>
+		<input class="colorSelect" type="color">
+		<span style="margin-left: 5px">Grid Size: </span>
+		<input class="canvas-size" type="number" value="16">
+		<input type="radio" name="drawStyle" value="original">Original</button>
+		<input type="radio" name="drawStyle" value="fade">Fade</button>
+		<input type="radio" name="drawStyle" value="random">Random</button>
 
 		<div class="container">
 
@@ -13,38 +21,48 @@
 
 
 		<script>
-		function createGrid(length) {
-			let total = 0;
-
-			const container = document.querySelector(".container");
+		const container = document.querySelector(".container"); //Moved
+		function createGrid() {
+			let length = document.querySelector(".canvas-size").value;
+			
 			container.style.gridTemplateRows = "repeat(" + length + ", 1fr)";
 			container.style.gridTemplateColumns = "repeat(" + length + ", 1fr)";
 			for (let i = 0; i < length ** 2; i++) {
 				let pixel = document.createElement('div');
 				pixel.classList.add("pixel");
 				container.appendChild(pixel);
-				total++;
 			}
 			const pixels = document.querySelectorAll(".pixel");
-			pixels.forEach(pixel => pixel.addEventListener("mouseover", changeColor));
+			pixels.forEach(pixel => pixel.addEventListener("mouseover", changeColor));  
 		}
 
-		function changeColor() {
-			this.style.backgroundColor = "blue";
+		function changeColor(e) {
+			if (!e.ctrlKey) {
+				const colorSelect = document.querySelector(".colorSelect");
+				this.style.backgroundColor = colorSelect.value;
+			}
 		}
 
 		const resetButton = document.getElementById("reset");
 		resetButton.addEventListener('click', reset);
 
+
+		const resetColor = "rgba(0, 0, 0, 0.1)";
 		function reset() {
+			while (container.firstChild !== null) {
+				container.removeChild(container.firstChild);
+			}
+			createGrid();
+			/*
 			const pixels = document.querySelectorAll(".pixel");
-			pixels.forEach(pixel => pixel.style.backgroundColor = "green");
+			pixels.forEach(pixel => pixel.style.backgroundColor = resetColor);
+			*/
 		}
 
 
 
 
-		createGrid(16);
+		createGrid();
 
 		
 		</script>

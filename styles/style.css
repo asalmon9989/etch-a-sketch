@@ -2,7 +2,16 @@
 	box-sizing: border-box;
 }
 
+body {
+	text-align: center;
+}
+
+.canvas-size {
+	width: 50px;
+}
+
 .container {
+	margin: 0 auto;
 	width: 600px;
 	height: 600px;
 	display: grid;
@@ -11,7 +20,9 @@
 
 .pixel {
 	border-color: black;
-	background-color: green;
+	background-color: rgba(0, 0, 0, 0.1);
 	border-width: 2px;
 	margin: 1px;
+
 }
+
