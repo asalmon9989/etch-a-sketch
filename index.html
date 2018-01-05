@@ -9,11 +9,13 @@
 		<button id="reset">Reset</button>
 		<span style="margin-left: 5px">Color: </span>
 		<input class="colorSelect" type="color">
+		<input type="checkbox" name="rand" value="randColors">Randomize Colors</input>
 		<span style="margin-left: 5px">Grid Size: </span>
 		<input class="canvas-size" type="number" value="16">
-		<input type="radio" name="drawStyle" value="original">Original</button>
+		<input type="radio" name="drawStyle" value="original" checked="true">Original</button>
 		<input type="radio" name="drawStyle" value="fade">Fade</button>
-		<input type="radio" name="drawStyle" value="random">Random</button>
+
+		
 
 		<div class="container">
 
@@ -21,7 +23,31 @@
 
 
 		<script>
-		const container = document.querySelector(".container"); //Moved
+
+		
+		const container = document.querySelector(".container");
+		const defaultColor = "rgba(0, 0, 0, 0.1)";
+
+		function colorSquare(e) {
+			if (e.ctrlKey) {
+				return;
+			}
+			let buttonValue = document.querySelector("input[name=drawStyle]:checked").value;
+			let colorSelect;
+
+			if (document.querySelector("input[value=randColors]").checked) {
+				let r = Math.floor(Math.random() * 256 + 1);
+				let g = Math.floor(Math.random() * 256 + 1);
+				let b = Math.floor(Math.random() * 256 + 1);
+				colorSelect = "rgb(" + r + ", " + g + ", " + b + ")";
+			}
+			else {
+				colorSelect = document.querySelector(".colorSelect").value;
+			}
+			this.style.backgroundColor = colorSelect;
+		}
+
+
 		function createGrid() {
 			let length = document.querySelector(".canvas-size").value;
 			
@@ -33,36 +59,56 @@
 				container.appendChild(pixel);
 			}
 			const pixels = document.querySelectorAll(".pixel");
-			pixels.forEach(pixel => pixel.addEventListener("mouseover", changeColor));  
-		}
-
-		function changeColor(e) {
-			if (!e.ctrlKey) {
-				const colorSelect = document.querySelector(".colorSelect");
-				this.style.backgroundColor = colorSelect.value;
+			pixels.forEach(pixel => pixel.addEventListener("mouseover", colorSquare));
+			if (document.querySelector("input[name=drawStyle]:checked").value === "fade") {
+				fadeClick();
 			}
 		}
 
+
+		
+		function fadeClick() {
+			const pixels = document.querySelectorAll(".pixel");
+			pixels.forEach(pixel => pixel.style.transition = "background-color 1s");
+			pixels.forEach(pixel => pixel.addEventListener("transitionend", removeColor));
+			pixels.forEach(pixel => pixel.style.backgroundColor = defaultColor);
+		}
+		const fadeButton = document.querySelector("input[value=fade]");
+		fadeButton.onclick = fadeClick;
+
+
+		const originalButton = document.querySelector("input[value=original]");
+		originalButton.onclick = originalClick;
+		function originalClick() {
+			const pixels = document.querySelectorAll(".pixel");
+			pixels.forEach(pixel => pixel.style.transition = "");
+			pixels.forEach(pixel => pixel.removeEventListener("transitionend", removeColor));
+		}
+
+
+
+
+
+		function removeColor() {
+			this.style.backgroundColor = defaultColor;
+		}
+
+
+
+
 		const resetButton = document.getElementById("reset");
 		resetButton.addEventListener('click', reset);
-
-
-		const resetColor = "rgba(0, 0, 0, 0.1)";
 		function reset() {
 			while (container.firstChild !== null) {
 				container.removeChild(container.firstChild);
 			}
 			createGrid();
-			/*
-			const pixels = document.querySelectorAll(".pixel");
-			pixels.forEach(pixel => pixel.style.backgroundColor = resetColor);
-			*/
 		}
 
 
 
-
 		createGrid();
+		
 
 		
 		</script>
